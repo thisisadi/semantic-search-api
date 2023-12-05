@@ -1,14 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./db');
+const { getAllRecords } = require('./utils');
 require('dotenv').config();
 
 router.get('/', async (req, res) => {
     try {
-        const client = await pool.connect();
-        const result = await client.query('SELECT * FROM ' + process.env.TABLE);
-        const records = result.rows;
-        client.release();
+        const records = await getAllRecords();
         res.json(records);
     } catch (error) {
         console.error(error);
