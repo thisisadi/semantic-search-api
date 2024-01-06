@@ -25,6 +25,7 @@ router.get('/', async (req, res) => {
 router.get('/search', async (req, res) => {
     try {
         const query = req.query.query as string;
+        const k = parseInt(req.query.k as string, 10) || 3; // Default to 3 if k isn't provided or not a valid number
         const pinecone = new Pinecone();
         const indexName = process.env.PINECONE_INDEX || '';
         const index = pinecone.index<Project>(indexName);
@@ -35,7 +36,7 @@ router.get('/search', async (req, res) => {
         // Query the index using the query embeddings
         const results = await index.query({
             vector: queryEmbedding as Array<number>,
-            topK: 3,
+            topK: k,
             includeMetadata: true,
             includeValues: false
         });
